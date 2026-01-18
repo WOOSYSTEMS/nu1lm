@@ -1,0 +1,31 @@
+# Core LLM
+transformers>=4.40.0
+torch>=2.0.0
+accelerate>=0.28.0
+huggingface_hub>=0.22.0
+
+# Fine-tuning
+peft>=0.10.0
+bitsandbytes>=0.43.0
+datasets>=2.18.0
+trl>=0.8.0
+sentencepiece>=0.2.0
+
+# Spectral Analysis
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Image Analysis
+Pillow>=10.0.0
+scikit-image>=0.21.0
+
+# RAG
+sentence-transformers>=2.5.0
+
+# Optional: Spectral file formats
+# pip install spc              # For .spc files (Thermo/Galactic)
+# pip install renishawWiRE     # For .wdf files (Renishaw)
+
+# Optional: API clients for distillation
+# pip install openai>=1.0.0
+# pip install anthropic>=0.18.0
