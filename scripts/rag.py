@@ -104,9 +104,11 @@ class RAGSystem:
 
         print(f"Loading model from {model_path}...")
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
         self.model = AutoModelForCausalLM.from_pretrained(
             model_path,
-            torch_dtype=torch.float16,
+            torch_dtype=torch.float32,  # Use float32 for stability
             device_map="auto",
             trust_remote_code=True,
         )
@@ -141,11 +143,13 @@ class RAGSystem:
         with torch.no_grad():
             outputs = self.model.generate(
                 inputs.input_ids,
+                attention_mask=inputs.attention_mask,
                 max_new_tokens=max_tokens,
                 temperature=0.7,
                 top_p=0.9,
                 do_sample=True,
                 pad_token_id=self.tokenizer.eos_token_id,
+                repetition_penalty=1.1,
             )
 
         response = self.tokenizer.decode(outputs[0][inputs.input_ids.shape[-1]:], skip_special_tokens=True)

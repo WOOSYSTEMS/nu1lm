@@ -117,9 +117,7 @@ def finetune(
         model=model,
         train_dataset=dataset,
         args=training_args,
-        tokenizer=tokenizer,
-        max_seq_length=max_seq_length,
-        dataset_text_field="text",
+        processing_class=tokenizer,
     )
 
     print("Starting training...")
