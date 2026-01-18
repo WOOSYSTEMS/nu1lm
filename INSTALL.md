@@ -1,27 +1,37 @@
 # Installing Nu1lm
 
-## Option 1: Quick Install (pip)
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/nu1lm.git
-cd nu1lm
-
-# Install
-pip install -e .
-
-# Download the model
-python scripts/download_model.py --model nu1lm-nano
-
-# Run
-nu1lm
-```
-
-## Option 2: Docker (No Python setup needed)
+## Quick Install (Recommended)
 
 ```bash
 # Clone
-git clone https://github.com/yourusername/nu1lm.git
+git clone https://github.com/WOOSYSTEMS/nu1lm.git
+cd nu1lm
+
+# Create virtual environment (required on macOS)
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Download the AI model
+python scripts/download_model.py --model nu1lm-nano
+
+# Run
+python nu1lm_microplastics.py --model models/nu1lm-nano
+```
+
+## One-Liner (Linux)
+
+```bash
+git clone https://github.com/WOOSYSTEMS/nu1lm.git && cd nu1lm && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python scripts/download_model.py --model nu1lm-nano && python nu1lm_microplastics.py --model models/nu1lm-nano
+```
+
+## Docker (No Python setup needed)
+
+```bash
+# Clone
+git clone https://github.com/WOOSYSTEMS/nu1lm.git
 cd nu1lm
 
 # Build
@@ -36,28 +46,6 @@ docker run -it -v /path/to/your/spectra:/app/data nu1lm
 # Analyze a file
 docker run -v /path/to/spectra:/data nu1lm \
     python nu1lm_microplastics.py --analyze raman --file /data/sample.txt
-```
-
-## Option 3: Manual Install
-
-```bash
-# Clone
-git clone https://github.com/yourusername/nu1lm.git
-cd nu1lm
-
-# Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# or: venv\Scripts\activate  # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Download model
-python scripts/download_model.py --model nu1lm-nano
-
-# Run
-python nu1lm_microplastics.py
 ```
 
 ## System Requirements
@@ -83,12 +71,25 @@ python nu1lm_microplastics.py
 
 ## Troubleshooting
 
+### macOS: "externally-managed-environment" error
+You must use a virtual environment:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### "command not found: python"
+On macOS, use `python3` instead of `python`:
+```bash
+python3 -m venv venv
+```
+
 ### "CUDA out of memory"
 Use CPU mode or smaller model:
 ```bash
-# Force CPU
 export CUDA_VISIBLE_DEVICES=""
-python nu1lm_microplastics.py
+python nu1lm_microplastics.py --model models/nu1lm-nano
 ```
 
 ### "Model not found"
@@ -97,18 +98,17 @@ Download the model first:
 python scripts/download_model.py --model nu1lm-nano
 ```
 
-### macOS: "torch not compatible"
-Install PyTorch for Mac:
+Then specify the path when running:
 ```bash
-pip install torch torchvision torchaudio
+python nu1lm_microplastics.py --model models/nu1lm-nano
 ```
-
-### Windows: Long path errors
-Enable long paths in Windows or use shorter directory names.
 
 ## Verify Installation
 
 ```bash
+# Activate virtual environment first
+source venv/bin/activate
+
 # Test knowledge base
 python -c "from knowledge.microplastics_kb import MICROPLASTICS_KNOWLEDGE; print('Knowledge base OK')"
 
@@ -116,20 +116,30 @@ python -c "from knowledge.microplastics_kb import MICROPLASTICS_KNOWLEDGE; print
 python -c "from analyzers import RamanAnalyzer; print('Analyzers OK')"
 
 # Test full system
-python nu1lm_microplastics.py --question "What is polystyrene?"
+python nu1lm_microplastics.py --model models/nu1lm-nano --question "What is polystyrene?"
+```
+
+## Daily Usage
+
+After installation, each time you want to use Nu1lm:
+
+```bash
+cd nu1lm
+source venv/bin/activate
+python nu1lm_microplastics.py --model models/nu1lm-nano
 ```
 
 ## Updating
 
 ```bash
 cd nu1lm
+source venv/bin/activate
 git pull
-pip install -e . --upgrade
+pip install -r requirements.txt --upgrade
 ```
 
 ## Uninstalling
 
 ```bash
-pip uninstall nu1lm
-rm -rf ~/nu1lm  # or wherever you cloned it
+rm -rf ~/nu1lm
 ```
